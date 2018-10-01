@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">বাংলা অভিধান</string>
+    <string name="lookup_hint">সার্চ করুন</string>
+    <string name="definition_missing">Definition Missing</string>
+</resources>
