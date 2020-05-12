@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BanglaDictionary.iml" filepath="$PROJECT_DIR$/BanglaDictionary.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/BanglaDictionary.iml" filepath="$PROJECT_DIR$/.idea/BanglaDictionary.iml" group="BanglaDictionary" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="BanglaDictionary/app" />
     </modules>
   </component>
 </project>

@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -61,9 +61,8 @@ public class MainActivity extends AppCompatActivity {
                             else
                                 tv.setText(Html.fromHtml(cursor.getString(col_index)));
                             tv.setTextSize(25);
-                            tv.setTextColor(Color.BLACK);
                             tv.setLayoutParams(new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.FILL_PARENT,
+                                    LinearLayout.LayoutParams.MATCH_PARENT,
                                     LinearLayout.LayoutParams.WRAP_CONTENT));
                             tv.setOnClickListener(new View.OnClickListener() {
                                 @Override
@@ -96,9 +95,9 @@ public class MainActivity extends AppCompatActivity {
     public void findMeaning(View v){
         TextView textView = (TextView) v;
         // Load the MeaningActivity using Intent
-        Intent intent = new Intent(this, MeaningActivity.class);
-        intent.putExtra(LOOKUP_TEXT, textView.getText());
-        intent.putExtra(LANGUAGE, text_language);
-        startActivity(intent);
+        Intent meaningIntent = new Intent(this, MeaningActivity.class);
+        meaningIntent.putExtra(LOOKUP_TEXT, textView.getText());
+        meaningIntent.putExtra(LANGUAGE, text_language);
+        startActivity(meaningIntent);
     }
 }
