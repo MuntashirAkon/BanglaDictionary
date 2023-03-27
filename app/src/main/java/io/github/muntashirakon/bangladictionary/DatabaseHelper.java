@@ -10,8 +10,6 @@ import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.nfc.Tag;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper
@@ -26,11 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     DatabaseHelper(Context context, String Database) {
         super(context, Database, null, 1);// 1? Its database Version
         DB_NAME = Database;
-        if(android.os.Build.VERSION.SDK_INT >= 17){
-            DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
-        } else {
-            DB_PATH = "/data/data/" + context.getPackageName() + "/databases/";
-        }
+        DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
         this.mContext = context;
     }
 

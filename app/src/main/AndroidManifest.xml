@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.muntashirakon.bangladictionary">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:icon="@mipmap/ic_launcher"
@@ -9,17 +10,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:hardwareAccelerated="true">
-        <activity android:name="io.github.muntashirakon.bangladictionary.MainActivity">
+        <activity
+            android:name="io.github.muntashirakon.bangladictionary.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name="io.github.muntashirakon.bangladictionary.MeaningActivity">
+            android:name="io.github.muntashirakon.bangladictionary.MeaningActivity"
+            android:exported="false">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.muntashirakon.bangladictionary.MainActivity"/>
+                android:value="io.github.muntashirakon.bangladictionary.MainActivity" />
         </activity>
     </application>
 </manifest>
