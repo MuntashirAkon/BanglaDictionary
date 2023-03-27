@@ -59,9 +59,8 @@ public final class Database implements Closeable {
     @Nullable
     public Cursor getWordMeaning(@NonNull CharSequence word) {
         try {
-            String w = word.toString();
-            String sql = "SELECT definition FROM words WHERE word_name = \"" + w + "\"";
-            return mDb.rawQuery(sql, null);
+            String sql = "SELECT definition FROM words WHERE word_name = ?";
+            return mDb.rawQuery(sql, new String[]{word.toString()});
         } catch (SQLException e) {
             Log.e(TAG, "Error while fetching word meaning", e);
             return null;
@@ -71,9 +70,8 @@ public final class Database implements Closeable {
     @Nullable
     public Cursor getSynonymAntonym(@NonNull CharSequence word) {
         try {
-            String w = word.toString();
-            String sql = "SELECT synonym, antonym FROM words WHERE word_name = \"" + w + "\"";
-            return mDb.rawQuery(sql, null);
+            String sql = "SELECT synonym, antonym FROM words WHERE word_name = ?";
+            return mDb.rawQuery(sql, new String[]{word.toString()});
         } catch (SQLException e) {
             Log.e(TAG, "Error while fetching synonyms and antonyms", e);
             return null;

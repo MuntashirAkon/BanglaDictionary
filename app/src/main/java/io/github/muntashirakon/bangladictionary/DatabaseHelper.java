@@ -13,17 +13,18 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+    public static final String TAG = DatabaseHelper.class.getSimpleName();
+
     // Destination path (location) of our database on device
-    private String DB_PATH = "";
-    private String DB_NAME = ""; // Database name
+    private final String mDbPath;
+    private final String mDbName; // Database name
     private SQLiteDatabase mDataBase;
-    private String TAG = "DatabaseHelper";
     private final Context mContext;
 
     DatabaseHelper(Context context, String Database) {
         super(context, Database, null, 1);// 1? Its database Version
-        DB_NAME = Database;
-        DB_PATH = context.getApplicationInfo().dataDir + "/databases/";
+        mDbName = Database;
+        mDbPath = context.getApplicationInfo().dataDir + "/databases/";
         this.mContext = context;
     }
 
@@ -36,7 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             try {
                 // Copy the database from assets
                 copyDatabase();
-                Log.e(TAG, "createDatabase: " + DB_NAME + " database created");
+                Log.e(TAG, "createDatabase: " + mDbName + " database created");
             } catch (IOException mIOException) {
                 throw new Error("ErrorCopyingDataBase");
             }
@@ -45,15 +46,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Check that the database exists here: /data/data/your package/databases/Da Name
     private boolean checkDatabase() {
-        File dbFile = new File(DB_PATH + DB_NAME);
+        File dbFile = new File(mDbPath + mDbName);
         //Log.v("dbFile", dbFile + "   "+ dbFile.exists());
         return dbFile.exists();
     }
 
     // Copy the database from assets
     private void copyDatabase() throws IOException {
-        InputStream mInput = mContext.getAssets().open(DB_NAME);
-        String outFileName = DB_PATH + DB_NAME;
+        InputStream mInput = mContext.getAssets().open(mDbName);
+        String outFileName = mDbPath + mDbName;
         OutputStream mOutput = new FileOutputStream(outFileName);
         byte[] mBuffer = new byte[1024];
         int mLength;
@@ -67,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Open the database, so we can query it
     boolean openDatabase() throws SQLException {
-        String mPath = DB_PATH + DB_NAME;
+        String mPath = mDbPath + mDbName;
         //Log.v("mPath", mPath);
         mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.CREATE_IF_NECESSARY);
         //mDataBase = SQLiteDatabase.openDatabase(mPath, null, SQLiteDatabase.NO_LOCALIZED_COLLATORS);

@@ -20,10 +20,6 @@
         </activity>
         <activity
             android:name="io.github.muntashirakon.bangladictionary.MeaningActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="io.github.muntashirakon.bangladictionary.MainActivity" />
-        </activity>
+            android:exported="false" />
     </application>
 </manifest>
