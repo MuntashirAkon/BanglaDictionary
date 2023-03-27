@@ -2,9 +2,7 @@ package io.github.muntashirakon.bangladictionary;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Build;
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Html;
@@ -14,11 +12,13 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class MainActivity extends AppCompatActivity {
     public static final String LOOKUP_TEXT = "io.github.muntashirakon.bangladictionary.LOOKUP_TEXT";
     public static final String LANGUAGE   = "io.github.muntashirakon.bangladictionary.LANGUAGE";
-    private LinearLayout suggestion_box;
-    private String text_language;
+    private LinearLayout suggestionBox;
+    private String textLanguage;
     private Database DB_BN;
     private Database DB_EN;
 
@@ -26,8 +26,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setSupportActionBar(findViewById(R.id.toolbar));
         // Set suggestion box
-        suggestion_box = findViewById(R.id.suggestions);
+        suggestionBox = findViewById(R.id.suggestions);
         // Set Databases
         DB_BN = new Database(getBaseContext(), Database.BN_DB);
         DB_EN = new Database(getBaseContext(), Database.EN_DB);
@@ -40,40 +41,32 @@ public class MainActivity extends AppCompatActivity {
             // Show suggestions
             public void afterTextChanged(final Editable lookup_text) {
                 // FIXME: Do this in a separate thread
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        suggestion_box.removeAllViews();
-                        Cursor cursor;
-                        // Check for language
-                        if(lookup_text.toString().matches("^[A-Za-z0-9_+-.]+")){ // English
-                            cursor = DB_EN.getSuggestions(lookup_text);
-                            text_language = MeaningActivity.LANG_EN;
-                        } else { // Bangla
-                            cursor = DB_BN.getSuggestions(lookup_text);
-                            text_language = MeaningActivity.LANG_BN;
-                        }
-                        while (cursor != null && cursor.moveToNext()){
-                            int col_index = cursor.getColumnIndexOrThrow("word_name");
-                            TextView tv = new TextView(getBaseContext());
-                            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                                tv.setText(Html.fromHtml(cursor.getString(col_index), Html.FROM_HTML_MODE_COMPACT));
-                            else
-                                tv.setText(Html.fromHtml(cursor.getString(col_index)));
-                            tv.setTextSize(25);
-                            tv.setLayoutParams(new LinearLayout.LayoutParams(
-                                    LinearLayout.LayoutParams.MATCH_PARENT,
-                                    LinearLayout.LayoutParams.WRAP_CONTENT));
-                            tv.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    findMeaning(v);
-                                }
-                            });
-                            suggestion_box.addView(tv);
-                        }
-
+                runOnUiThread(() -> {
+                    suggestionBox.removeAllViews();
+                    Cursor cursor;
+                    // Check for language
+                    if(lookup_text.toString().matches("^[A-Za-z0-9_+-.]+")){ // English
+                        cursor = DB_EN.getSuggestions(lookup_text);
+                        textLanguage = MeaningActivity.LANG_EN;
+                    } else { // Bangla
+                        cursor = DB_BN.getSuggestions(lookup_text);
+                        textLanguage = MeaningActivity.LANG_BN;
                     }
+                    while (cursor != null && cursor.moveToNext()){
+                        int col_index = cursor.getColumnIndexOrThrow("word_name");
+                        TextView tv = new TextView(getBaseContext());
+                        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                            tv.setText(Html.fromHtml(cursor.getString(col_index), Html.FROM_HTML_MODE_COMPACT));
+                        else
+                            tv.setText(Html.fromHtml(cursor.getString(col_index)));
+                        tv.setTextSize(25);
+                        tv.setLayoutParams(new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT));
+                        tv.setOnClickListener(v -> findMeaning(v));
+                        suggestionBox.addView(tv);
+                    }
+
                 });
             }
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -88,16 +81,12 @@ public class MainActivity extends AppCompatActivity {
         DB_EN.close();
     }
 
-    /**
-     * Loads the MeaningActivity to show the meaning of the word.
-     * @param v TextView containing the word
-     */
     public void findMeaning(View v){
         TextView textView = (TextView) v;
         // Load the MeaningActivity using Intent
         Intent meaningIntent = new Intent(this, MeaningActivity.class);
         meaningIntent.putExtra(LOOKUP_TEXT, textView.getText());
-        meaningIntent.putExtra(LANGUAGE, text_language);
+        meaningIntent.putExtra(LANGUAGE, textLanguage);
         startActivity(meaningIntent);
     }
 }

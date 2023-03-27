@@ -12,8 +12,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-public class DatabaseHelper extends SQLiteOpenHelper
-{
+public class DatabaseHelper extends SQLiteOpenHelper {
     // Destination path (location) of our database on device
     private String DB_PATH = "";
     private String DB_NAME = ""; // Database name
@@ -31,15 +30,14 @@ public class DatabaseHelper extends SQLiteOpenHelper
     void createDatabase() throws IOException {
         // If the database does not exist, copy it from the assets.
         boolean mDataBaseExist = checkDatabase();
-        if(!mDataBaseExist) {
+        if (!mDataBaseExist) {
             this.getReadableDatabase();
             this.close();
             try {
                 // Copy the database from assets
                 copyDatabase();
                 Log.e(TAG, "createDatabase: " + DB_NAME + " database created");
-            }
-            catch (IOException mIOException) {
+            } catch (IOException mIOException) {
                 throw new Error("ErrorCopyingDataBase");
             }
         }
@@ -59,7 +57,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
         OutputStream mOutput = new FileOutputStream(outFileName);
         byte[] mBuffer = new byte[1024];
         int mLength;
-        while ((mLength = mInput.read(mBuffer))>0) {
+        while ((mLength = mInput.read(mBuffer)) > 0) {
             mOutput.write(mBuffer, 0, mLength);
         }
         mOutput.flush();
@@ -78,14 +76,16 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     @Override
     public synchronized void close() {
-        if(mDataBase != null)
+        if (mDataBase != null)
             mDataBase.close();
         super.close();
     }
 
     @Override
-    public void onCreate(SQLiteDatabase sqLiteDatabase) {}
+    public void onCreate(SQLiteDatabase sqLiteDatabase) {
+    }
 
     @Override
-    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {}
+    public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+    }
 }

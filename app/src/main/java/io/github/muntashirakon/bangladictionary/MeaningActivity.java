@@ -8,7 +8,9 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.Html;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,13 +34,14 @@ public class MeaningActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meaning);
+        setSupportActionBar(findViewById(R.id.toolbar));
         // Get the word
         Intent intent = getIntent();
         Database DB;
-        CharSequence lookup_text = intent.getCharSequenceExtra(MainActivity.LOOKUP_TEXT);
+        CharSequence lookupText = intent.getCharSequenceExtra(MainActivity.LOOKUP_TEXT);
         String language = intent.getCharSequenceExtra(MainActivity.LANGUAGE).toString();
         // Change Title
-        this.setTitle(lookup_text);
+        this.setTitle(lookupText);
         // Get the data from DB and set it to text view
         // DB
         if (language.equals(LANG_BN))
@@ -53,10 +56,10 @@ public class MeaningActivity extends AppCompatActivity {
         syn.setVisibility(View.GONE);
         DB.createDatabase();
         DB.open();
-        Cursor cursor = DB.getWordMeaning(lookup_text);
-        if (cursor != null && cursor.moveToNext()){
+        Cursor cursor = DB.getWordMeaning(lookupText);
+        if (cursor != null && cursor.moveToNext()) {
             int col_index = cursor.getColumnIndexOrThrow("definition");
-            if(language.equals(LANG_BN)) {
+            if (language.equals(LANG_BN)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                     tv.setText(Html.fromHtml(cursor.getString(col_index), Html.FROM_HTML_MODE_COMPACT));
                 else
@@ -73,14 +76,15 @@ public class MeaningActivity extends AppCompatActivity {
                     CharSequence synonyms = cursor.getString(cursor.getColumnIndexOrThrow("synonym"));
                     CharSequence antonyms = cursor.getString(cursor.getColumnIndexOrThrow("antonym"));
                     String synAnt = "";
-                    if(synonyms.length() != 0) synAnt += "<h3>Synonyms</h3>" + "<p>" + synonyms + "</p>";
-                    if(antonyms.length() != 0) synAnt += "<h3>Antonyms</h3>" + "<p>" + antonyms + "</p>";
-                    if(synAnt.length() != 0)
+                    if (synonyms.length() != 0) synAnt += "<h3>Synonyms</h3>" + "<p>" + synonyms + "</p>";
+                    if (antonyms.length() != 0) synAnt += "<h3>Antonyms</h3>" + "<p>" + antonyms + "</p>";
+                    if (synAnt.length() != 0) {
                         syn.setVisibility(View.VISIBLE);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                             syn.setText(Html.fromHtml(synAnt, Html.FROM_HTML_MODE_COMPACT));
                         else
                             syn.setText(Html.fromHtml(synAnt));
+                    }
                 }
             }
         }
@@ -89,14 +93,11 @@ public class MeaningActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; goto parent activity.
-                this.finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == android.R.id.home) {
+            this.finish();
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     class imageDownload extends AsyncTask<String, Integer, Bitmap> {
@@ -109,6 +110,7 @@ public class MeaningActivity extends AppCompatActivity {
         final String meaning_img;
         File img_file;
         int responseCode = -1;
+
         //constructor.
         imageDownload(Context context, ImageView imageView, TextView placeholder, String word) {
             this.context = context;
@@ -117,18 +119,20 @@ public class MeaningActivity extends AppCompatActivity {
             this.word = word;
             meaning_img = getFilesDir().getPath() + File.separator + word;
             img_file = new File(meaning_img);
-            placeholder.setText((CharSequence)
-                    ("No/poor internet connection and/or cache is not available. " +
+            placeholder.setText("No/poor internet connection and/or cache is not available. " +
                     "Please connect to the internet to download the meaning. " +
-                    "Once it is downloaded, it'll be available offline.")
+                    "Once it is downloaded, it'll be available offline."
             );
         }
+
         @Override
-        protected void onPreExecute() {}
+        protected void onPreExecute() {
+        }
+
         @Override
         protected Bitmap doInBackground(String... params) {
             // Return if file has already been downloaded
-            if(img_file.exists()){
+            if (img_file.exists()) {
                 bitmap = BitmapFactory.decodeFile(img_file.getAbsolutePath());
                 return bitmap;
             }
@@ -167,6 +171,7 @@ public class MeaningActivity extends AppCompatActivity {
             }
             return bitmap;
         }
+
         @Override
         protected void onPostExecute(Bitmap bitmap) {
             placeholder.setVisibility(View.GONE);
